@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HAPPY BIRTHDAY SYAFARI 158CM !!!!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;700;800;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link href="style.css" rel="stylesheet"/>
+</head>
+<body class="hide-scrollbar">
+
+<!-- custom cursor -->
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+
+<!-- floating particles canvas -->
+<canvas id="particles-canvas"></canvas>
+
+<!-- corner random texts -->
+<span class="corner-text" style="top:12px;left:12px;">made at 2am with ❤️</span>
+<span class="corner-text" style="top:12px;right:12px;">ver 1.0.0-chaotic</span>
+<span class="corner-text" style="bottom:32px;left:12px;">© cinta yg agak aneh <span id="cpr-year"></span></span>
+
+<!-- ============================
+     SECTION: ONBOARDING
+============================= -->
+<div id="onboarding">
+  <div class="warning-box">
+    <div class="warning-emoji">⚠️</div>
+    <p class="onboard-title">WARNING:<br/>website ini mengandung kadar cringe!</p>
+    <p class="onboard-sub">
+      🔒 khusus dibuka oleh manusia bernama<br/>
+      <span style="font-size:1.2em;color:#e91e8c;">Syafari 158cm</span><br/><br/>
+      jika kamu bukan dia, tutup tab sekarang.
+    </p>
+    <audio id="onboarding-audio" src=""></audio>
+    <button class="btn-enter btn-primary" onclick="enterPortal()">🎂 buka portal ultah</button>
+  </div>
+</div>
+
+<!-- FAKE LOADING -->
+<div id="fake-loading">
+  <div class="loading-emoji">✨</div>
+  <p style="font-family:'Pacifico',cursive;font-size:1.3rem;color:#c04090;margin-top:0.5rem;">loading kado digital...</p>
+  <div class="loading-bar-wrap"><div class="loading-bar-fill" id="loading-bar"></div></div>
+  <p class="loading-text" id="loading-text-el">spawning confetti particles...</p>
+</div>
+
+<!-- TRANSITION OVERLAY -->
+<div id="transition-overlay"></div>
+
+<!-- POPUP OVERLAY -->
+<div id="popup-overlay" onclick="closePopup()">
+  <div id="popup-box" onclick="event.stopPropagation()">
+    <span id="popup-emoji" class="popup-emoji">💕</span>
+    
+    <!-- Tambahkan ini -->
+    <img id="popup-gif" src="" alt="" style="display:none; width:220px; border-radius:12px; margin:10px auto;">
+    <audio id="popup-audio" src="" loop></audio>
+    <audio id="popup-audio-open" src=""></audio>
+    
+    <p id="popup-text" class="popup-text">loading...</p>
+    <button class="popup-close" onclick="closePopup()">oke deh~~</button>
+  </div>
+</div>
+
+<!-- EASTER EGG TRIGGER -->
+<div id="easter-egg-trigger" title="👀" onclick="showEasterEgg()">🐣</div>
+
+<!-- EASTER EGG POPUP -->
+<div id="easter-egg-popup" onclick="closeEasterEgg()">
+  <div id="easter-egg-box" onclick="event.stopPropagation()">
+    <div style="font-size:3rem;margin-bottom:0.5rem;">🐣✨</div>
+    <p style="font-family:'Pacifico',cursive;color:#e91e8c;font-size:1.1rem;margin-bottom:0.75rem;">kamu nemu easter egg!!</p>
+    <p style="font-size:0.9rem;color:#7a0060;font-weight:700;line-height:1.6;margin-bottom:1rem;">
+      fun fact: website ini dibuat sambil dengerin lagu yang sama di-repeat 47 kali karena gak tau mau dengerin apa.<br/><br/>
+      juga: kamu itu genuinely salah satu orang paling random tapi ngangenin yang pernah ada. jangan berubah ya 🥹
+    </p>
+    <button onclick="closeEasterEgg()" style="background:linear-gradient(135deg,#ff69b4,#c8a0ff);color:white;border:none;border-radius:999px;padding:0.6rem 1.8rem;font-family:'Nunito',sans-serif;font-weight:900;cursor:pointer;">awww makasih 🩷</button>
+  </div>
+</div>
+
+<!-- ============================
+     MAIN CONTENT
+============================= -->
+<div id="main-content">
+
+  <!-- SECTION 1: HERO -->
+  <section class="hero-section">
+    <!-- floating deco -->
+    <span class="float-deco" style="font-size:2.5rem;top:8%;left:5%;animation-duration:4s;">🌸</span>
+    <span class="float-deco" style="font-size:2rem;top:15%;right:8%;animation-duration:5.5s;animation-delay:-1s;">💫</span>
+    <span class="float-deco" style="font-size:3rem;top:5%;left:40%;animation-duration:6s;animation-delay:-2s;">⭐</span>
+    <span class="float-deco" style="font-size:1.8rem;top:25%;left:2%;animation-duration:4.5s;animation-delay:-0.5s;">🎀</span>
+    <span class="float-deco" style="font-size:2.2rem;top:20%;right:3%;animation-duration:5s;animation-delay:-1.5s;">✨</span>
+    <span class="float-deco" style="font-size:2rem;bottom:20%;left:6%;animation-duration:7s;animation-delay:-3s;">💕</span>
+    <span class="float-deco" style="font-size:1.5rem;bottom:15%;right:5%;animation-duration:4s;animation-delay:-0.7s;">🌟</span>
+    <span class="float-deco" style="font-size:2.8rem;bottom:25%;left:45%;animation-duration:5s;animation-delay:-2.5s;">🎂</span>
+    <span class="float-deco" style="font-size:1.2rem;top:40%;left:1%;animation-duration:6.5s;animation-delay:-1s;">🦋</span>
+    <span class="float-deco" style="font-size:1.2rem;top:45%;right:1%;animation-duration:3.5s;animation-delay:-2s;">🫧</span>
+
+    <div style="position:relative;z-index:1;max-width:700px;padding:1rem;">
+      <!-- date badge -->
+      <div style="display:inline-block;background:rgba(255,255,255,0.6);backdrop-filter:blur(8px);border:1.5px solid rgba(255,105,180,0.4);border-radius:999px;padding:0.4rem 1.2rem;font-family:'Space Mono',monospace;font-size:0.75rem;color:#c04090;margin-bottom:1.5rem;font-weight:700;">
+        📅 28 MEI 2001 → sekarang (25 tahun survive!!)
+      </div>
+
+      <h1 class="hero-title glitter">
+        Happy Birthday,<br/>Syafari!! 🎉
+      </h1>
+
+      <p class="hero-sub" style="margin:0 auto 1.5rem;">
+        selamat bertambah tua dan semakin dekat<br/>dengan sakit pinggang 🗿
+      </p>
+
+      <div class="glass-card" style="padding:1.5rem;max-width:520px;margin:0 auto 2rem;">
+        <p style="font-size:clamp(0.9rem,2.2vw,1.1rem);color:#7a0060;font-weight:700;line-height:1.7;">
+          "28 Mei: hari dimana dunia memutuskan untuk
+          <span style="color:#e91e8c;">spawn manusia random favoritku</span>
+          ke bumi. dan entah kenapa keputusan itu turned out to be
+          <span style="color:#a855f7;">literally the best thing</span> 🌸"
+        </p>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:0.6rem;justify-content:center;margin-bottom:2rem;">
+        <span style="background:rgba(255,182,193,0.5);backdrop-filter:blur(8px);border:1px solid rgba(255,105,180,0.4);border-radius:999px;padding:0.4rem 1rem;font-size:0.85rem;font-weight:800;color:#9c0060;">🎂 level 25 unlocked</span>
+        <span style="background:rgba(200,160,255,0.4);backdrop-filter:blur(8px);border:1px solid rgba(168,85,247,0.4);border-radius:999px;padding:0.4rem 1rem;font-size:0.85rem;font-weight:800;color:#6020a0;">⚡ 158cm of power</span>
+        <span style="background:rgba(255,215,0,0.25);backdrop-filter:blur(8px);border:1px solid rgba(255,215,0,0.5);border-radius:999px;padding:0.4rem 1rem;font-size:0.85rem;font-weight:800;color:#806000;">✨ rare spawn</span>
+      </div>
+
+      <p style="font-family:'Space Mono',monospace;font-size:0.8rem;color:#b05080;animation:heartThrob 2s ease infinite;display:inline-block;">
+        scroll ke bawah ya~~ ↓↓↓
+      </p>
+    </div>
+  </section>
+
+  <!-- SECTION 2: FUNNY ACHIEVEMENTS -->
+  <section style="padding:4rem 1.5rem;max-width:900px;margin:0 auto;" class="scroll-reveal">
+    <p class="section-title glitter">🏆 Achievement Gallery</p>
+    <p class="section-sub">hal-hal absurd yang berhasil kamu capai sampai detik ini</p>
+    <div class="divider"></div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.2rem;">
+
+      <div class="achievement-card wiggle">
+        <span class="badge badge-gold">★ LEGENDARY</span>
+        <p style="font-size:1.4rem;margin-bottom:0.5rem;">🎮</p>
+        <p style="font-weight:900;color:#7a0060;margin-bottom:0.4rem;font-size:1rem;">Achievement Unlocked</p>
+        <p style="font-size:0.9rem;color:#9c4070;font-weight:700;">Survive sampai Level 25 tanpa save file. No continues, no cheats. respect.</p>
+      </div>
+
+      <div class="achievement-card wiggle">
+        <span class="badge badge-pink">♥ RARE ITEM</span>
+        <p style="font-size:1.4rem;margin-bottom:0.5rem;">🎧</p>
+        <p style="font-weight:900;color:#7a0060;margin-bottom:0.4rem;font-size:1rem;">Rare Item Obtained</p>
+        <p style="font-size:0.9rem;color:#9c4070;font-weight:700;">Teman yang selalu cerita, ovt, jam 2 pagi tanpa pause. drop rate: 0.01%</p>
+      </div>
+
+      <div class="achievement-card wiggle">
+        <span class="badge badge-purple">👑 TITLE</span>
+        <p style="font-size:1.4rem;margin-bottom:0.5rem;">😴</p>
+        <p style="font-weight:900;color:#7a0060;margin-bottom:0.4rem;font-size:1rem;">Title Earned</p>
+        <p style="font-size:0.9rem;color:#9c4070;font-weight:700;">CEO of Bikin Orang Khawatir karena mood swing drastis jam 4 pagi terus ngeluh besoknya</p>
+      </div>
+
+      <div class="achievement-card wiggle">
+        <span class="badge badge-mint">↑ STATUS BUFF</span>
+        <p style="font-size:1.4rem;margin-bottom:0.5rem;">✨</p>
+        <p style="font-weight:900;color:#7a0060;margin-bottom:0.4rem;font-size:1rem;">Passive Buff Active</p>
+        <p style="font-size:0.9rem;color:#9c4070;font-weight:700;">+999999999999 Aura Cewek Random Tapi Ngangenin. effect: orang orang inget kamu pas ga ada</p>
+      </div>
+
+      <div class="achievement-card wiggle">
+        <span class="badge badge-blue">📜 LORE</span>
+        <p style="font-size:1.4rem;margin-bottom:0.5rem;">📱</p>
+        <p style="font-weight:900;color:#7a0060;margin-bottom:0.4rem;font-size:1rem;">Hidden Lore Unlocked</p>
+        <p style="font-size:0.9rem;color:#9c4070;font-weight:700;">Bisa ilang kontak bertahun tahun tapi kalau udah balik kayak ga kemana-mana. chaotic energy.</p>
+      </div>
+
+      <div class="achievement-card wiggle">
+        <span class="badge badge-gold">⚡ SKILL</span>
+        <p style="font-size:1.4rem;margin-bottom:0.5rem;">🌪️</p>
+        <p style="font-weight:900;color:#7a0060;margin-bottom:0.4rem;font-size:1rem;">Special Skill Mastered</p>
+        <p style="font-size:0.9rem;color:#9c4070;font-weight:700;">Punya energy yang annoying dan wholesome di saat yang bersamaan. para ahli masih bingung.</p>
+      </div>
+
+      <div class="achievement-card wiggle">
+        <span class="badge badge-pink">🌸 EXTRA</span>
+        <p style="font-size:1.4rem;margin-bottom:0.5rem;">📏</p>
+        <p style="font-weight:900;color:#7a0060;margin-bottom:0.4rem;font-size:1rem;">Physical Trait Noted</p>
+        <p style="font-size:0.9rem;color:#9c4070;font-weight:700;">158cm tapi aura gede. entah gimana caranya. mungkin itu superpower. mungkin.</p>
+      </div>
+
+      <div class="achievement-card wiggle">
+        <span class="badge badge-purple">💖 HEART</span>
+        <p style="font-size:1.4rem;margin-bottom:0.5rem;">🥹</p>
+        <p style="font-weight:900;color:#7a0060;margin-bottom:0.4rem;font-size:1rem;">Friendship Event</p>
+        <p style="font-size:0.9rem;color:#9c4070;font-weight:700;">Berhasil jadi orang yang genuinely bikin hidup orang lain lebih baik without even trying (e.g . stranger like me). OP character.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 3: INTERACTIVE BUTTONS -->
+  <section style="padding:3rem 1.5rem;max-width:700px;margin:0 auto;" class="scroll-reveal">
+    <p class="section-title glitter">🎮 Interactive Zone</p>
+    <p class="section-sub">pencet tombol-tombol ini. trust the process.</p>
+    <div class="divider"></div>
+
+    <div class="glass-card" style="padding:2rem;text-align:center;">
+      <div style="display:flex;flex-direction:column;gap:1rem;align-items:center;">
+
+        <button class="fun-btn pulse-glow" onclick="triggerPopup('sad')"
+          style="background:linear-gradient(135deg,#ff9ec8,#e91e8c);color:white;padding:1rem 2.5rem;font-size:1.05rem;box-shadow:0 4px 20px rgba(233,30,140,0.35);">
+          🥺 pencet kalau lagi sedih
+        </button>
+
+        <button class="fun-btn" onclick="triggerPopup('danger')"
+          style="background:linear-gradient(135deg,#ff6060,#cc0000);color:white;padding:0.9rem 2.2rem;font-size:1rem;box-shadow:0 4px 20px rgba(204,0,0,0.3);">
+          🚨 JANGAN DIPENCET
+        </button>
+
+        <button class="fun-btn" onclick="triggerPopup('bday')"
+          style="background:linear-gradient(135deg,#c8a0ff,#a855f7);color:white;padding:0.9rem 2.2rem;font-size:1rem;box-shadow:0 4px 20px rgba(168,85,247,0.35);">
+          🎂 birthday message khusus
+        </button>
+
+        <button class="fun-btn" onclick="triggerPopup('random')"
+          style="background:rgba(255,255,255,0.6);backdrop-filter:blur(8px);border:2px solid rgba(255,105,180,0.5);color:#9c0060;padding:0.9rem 2.2rem;font-size:1rem;">
+          🎲 random quote mode
+        </button>
+
+      </div>
+
+      <p style="font-family:'Space Mono',monospace;font-size:0.7rem;color:#c04090;margin-top:1.5rem;opacity:0.7;">
+        * side effects: senyum ga jelas, nangis, terharu, atau semuanya secara bersamaan.
+      </p>
+    </div>
+  </section>
+
+  <!-- SECTION 4: PERSONAL MESSAGE -->
+  <section style="padding:3rem 1.5rem;max-width:700px;margin:0 auto;" class="scroll-reveal">
+    <p class="section-title glitter">💌 Pesan Dari Orang yang Peduli</p>
+    <!-- <p class="section-sub">(tapi tetap absurd karena begitu adanya)</p> -->
+    <div class="divider"></div>
+
+    <div class="glass-card" style="padding:2rem 2rem;">
+      <div style="font-size:2.5rem;text-align:center;margin-bottom:1rem;">🩷</div>
+      <div class="ending-text" style="text-align:center;">
+        <p style="margin-bottom:1rem;">makasih udah hadir di dunia,<br/>walaupun mood swing nya deres bgt 🗿</p>
+        <p style="margin-bottom:1rem;">terima kasih udah bertahan hidup sejauh ini<br/>walaupun kadang suka aneh <span style="color:#e91e8c;">— dan itu hal yang aku suka</span></p>
+        <p style="margin-bottom:1rem;">semoga semua hal baik pelan pelan datang ke hidup kamu. beneran. yang bagus-bagus semua.</p>
+        <p style="margin-bottom:1rem;">dan semoga, kalau kamu capek sama hidup ini…<br/>kamu tetep inget kalau ada orang yang <em>genuinely</em> seneng kamu lahir :)</p>
+        <p style="margin-bottom:1rem;">semoga bahagia terus walau tinggi cuma 158cm 🙌<br/><span style="font-size:0.85rem;color:#c08080;">(ini bukan body shaming ini bentuk kasih sayang)</span></p>
+        <div style="background:linear-gradient(135deg,rgba(255,182,193,0.4),rgba(200,160,255,0.4));border-radius:16px;padding:1.2rem;margin-top:1.5rem;border:1.5px solid rgba(255,105,180,0.3);">
+          <p style="font-family:'Pacifico',cursive,sans-serif;font-size:1.4rem;background:linear-gradient(135deg,#e91e8c,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+            Happy Birthday,<br/>Syafira Yudhanti Cahya Utami 🎂
+          </p>
+          <p style="font-size:0.85rem;color:#9c4070;font-weight:700;margin-top:0.5rem;">
+            Syafari 158cm yang satu-satunya.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: FOOTER -->
+  <footer style="padding:3rem 1.5rem 5rem;text-align:center;" class="scroll-reveal">
+    <div class="glass-card" style="max-width:500px;margin:0 auto;padding:2rem;">
+      <p style="font-size:2rem;margin-bottom:0.5rem;">🎉🎂✨🌸💕</p>
+      <p style="font-family:'Space Mono',monospace;font-size:0.75rem;color:#c04090;font-weight:700;line-height:1.8;">
+        made with: 100% cinta tulus<br/>
+        also: sedikit begadang, banyak typo awalnya<br/>
+        syududu AI was harmed in the making of this masterpiece<br/>
+        <span style="opacity:0.5;">(maybe mwehehee)</span>
+      </p>
+      <p style="font-family:'Pacifico',cursive;font-size:1.5rem;color:#e91e8c;margin-top:1rem;">
+        selamat ulang tahun ke-25!! 🥳
+      </p>
+      <p style="font-family:'Space Mono',monospace;font-size:0.75rem;color:#e91e8c;font-weight:700;margin-top:1rem;">
+        Please keep being yourself, and don’t change.
+      </p>
+      
+      <p style="font-family:'Space Mono',monospace;font-size:0.75rem;color:#e91e8c;font-weight:700;margin-top:1rem;">
+        Kalo aku ada salah mohon di maapin ya...
+      </p>
+      <p style="font-family:'Pacifico',cursive;font-size:1.5rem;color:#e91e8c;margin-top:1rem;">
+        🙇
+      </p>
+    </div>
+    <p onclick="scrollToTop()" style="font-family:'Space Mono',monospace;font-size:0.65rem;color:rgba(180,0,100,0.3);margin-top:1.5rem;">
+      scroll lagi dari atas kalau masih betah
+    </p>
+  </footer>
+
+</div> <!-- /main-content -->
+
+<script src="index.js"></script>
+</body>
+</html>
