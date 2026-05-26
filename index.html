@@ -55,13 +55,19 @@
 <div id="popup-overlay" onclick="closePopup()">
   <div id="popup-box" onclick="event.stopPropagation()">
     <span id="popup-emoji" class="popup-emoji">💕</span>
-    
-    <!-- Tambahkan ini -->
-    <img id="popup-gif" src="/public/scuba-cat-scuba.avif" alt="" style="display:none; width:220px; border-radius:12px; margin:10px auto;">
+
+    <img id="popup-gif" src="/public/scuba-cat-scuba.avif" alt="" style="display:block; width:220px; border-radius:12px; margin:10px auto;">
     <audio id="popup-audio" src="" loop></audio>
+    <audio id="popup-audio-kicau" src="" loop></audio>
     <audio id="popup-audio-open" src=""></audio>
-    
+
     <p id="popup-text" class="popup-text">loading...</p>
+
+    <!-- Progress bar, hanya muncul saat type sad -->
+    <div id="sad-progress-wrap" style="display:none; width:50%; background:#e0d0e8; border-radius:99px; height:6px; margin:20px auto;">
+      <div id="sad-progress-bar" style="height:6px; width:0%; background:linear-gradient(90deg,#c084fc,#818cf8); border-radius:99px; transition:width linear;"></div>
+    </div>
+
     <button class="popup-close" onclick="closePopup()">oke deh~~</button>
   </div>
 </div>
@@ -216,7 +222,7 @@
 
         <button class="fun-btn pulse-glow" onclick="triggerPopup('sad')"
           style="background:linear-gradient(135deg,#ff9ec8,#e91e8c);color:white;padding:1rem 2.5rem;font-size:1.05rem;box-shadow:0 4px 20px rgba(233,30,140,0.35);">
-          🥺 pencet kalau lagi sedih
+          Um.... 😶
         </button>
 
         <button class="fun-btn" onclick="triggerPopup('danger')"
@@ -224,15 +230,15 @@
           🚨 JANGAN DIPENCET
         </button>
 
-        <button class="fun-btn" onclick="triggerPopup('bday')"
+        <!-- <button class="fun-btn" onclick="triggerPopup('bday')"
           style="background:linear-gradient(135deg,#c8a0ff,#a855f7);color:white;padding:0.9rem 2.2rem;font-size:1rem;box-shadow:0 4px 20px rgba(168,85,247,0.35);">
           🎂 birthday message khusus
-        </button>
+        </button> -->
 
-        <button class="fun-btn" onclick="triggerPopup('random')"
+        <!-- <button class="fun-btn" onclick="triggerPopup('random')"
           style="background:rgba(255,255,255,0.6);backdrop-filter:blur(8px);border:2px solid rgba(255,105,180,0.5);color:#9c0060;padding:0.9rem 2.2rem;font-size:1rem;">
           🎲 random quote mode
-        </button>
+        </button> -->
 
       </div>
 

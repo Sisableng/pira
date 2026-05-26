@@ -269,6 +269,53 @@ document.querySelectorAll('.fun-btn').forEach(btn => {
 let currentEvent = null;
 document.addEventListener('click', e => { currentEvent = e; });
 
+let sadInterval = null;
+let sadProgressInterval = null;
+let sadIndex = 0;
+const SAD_DURATION = 5000; // ms, ganti sesuai selera
+
+function startSadRotate(pool) {
+  // Reset index ke posisi awal (quote pertama sudah ditampilkan di triggerPopup)
+  sadIndex = 0;
+
+  const wrap = document.getElementById('sad-progress-wrap');
+  const bar = document.getElementById('sad-progress-bar');
+  wrap.style.display = 'block';
+
+  function runCycle() {
+    // Reset & animasi progress bar
+    bar.style.transition = 'none';
+    bar.style.width = '0%';
+
+    // Paksa reflow supaya transition reset benar-benar terjadi
+    bar.offsetWidth;
+
+    bar.style.transition = `width ${SAD_DURATION}ms linear`;
+    bar.style.width = '100%';
+
+    // Ganti konten setelah durasi habis
+    sadInterval = setTimeout(() => {
+      sadIndex = (sadIndex + 1) % pool.length; // looping balik ke 0
+      const next = pool[sadIndex];
+      document.getElementById('popup-emoji').textContent = next.e;
+      document.getElementById('popup-text').textContent = next.t;
+      runCycle(); // rekursif → looping
+    }, SAD_DURATION);
+  }
+
+  runCycle();
+}
+
+function stopSadRotate() {
+  clearTimeout(sadInterval);
+  sadInterval = null;
+
+  const wrap = document.getElementById('sad-progress-wrap');
+  const bar = document.getElementById('sad-progress-bar');
+  wrap.style.display = 'none';
+  bar.style.width = '0%';
+}
+
 function triggerPopup(type) {
   const e = currentEvent;
   const pool = QUOTES[type] || QUOTES.random;
@@ -277,24 +324,28 @@ function triggerPopup(type) {
   document.getElementById('popup-emoji').textContent = q.e;
   document.getElementById('popup-text').textContent = q.t;
 
-  // Tampilkan GIF jika type === 'danger'
   const gif = document.getElementById('popup-gif');
   const audio = document.getElementById('popup-audio');
+  const audioKicau = document.getElementById('popup-audio-kicau');
   const audioOpen = document.getElementById('popup-audio-open');
 
-
+  stopSadRotate(); // selalu clear dulu
 
   if (type === 'danger') {
-    // gif.src = '/public/scuba-cat-scuba.gif';
     gif.style.display = 'block';
-    audio.src = '/public/kicau-mania.mp3';
-    audio.play().catch(() => {}); // catch jika browser blokir autoplay
+    audioKicau.src = '/public/kicau-mania.mp3';
+    audioKicau.play().catch(() => {});
+  } else if (type === 'sad') {
+    audio.src = '/public/sad-meow-song.mp3';
+    audio.play().catch(() => {});
+    gif.style.display = 'none';
+    audioKicau.pause();
+    startSadRotate(pool); // mulai rotate + progress bar
   } else {
     audioOpen.src = '/public/anime-wow.mp3';
-    audioOpen.play().catch(() => {}); // catch jika browser blokir autoplay
+    audioOpen.play().catch(() => {});
     gif.style.display = 'none';
-    audio.pause();
-    audio.src = '';
+    audioKicau.pause();
   }
 
   document.getElementById('popup-overlay').classList.add('active');
@@ -311,14 +362,18 @@ function triggerPopup(type) {
 function closePopup() {
   document.getElementById('popup-overlay').classList.remove('active');
 
-  // Stop audio & sembunyikan gif saat popup ditutup
+  stopSadRotate();
+
   const audio = document.getElementById('popup-audio');
   audio.pause();
   audio.currentTime = 0;
 
+  const audioKicau = document.getElementById('popup-audio-kicau');
+  audioKicau.pause();
+  audioKicau.currentTime = 0;
+
   const gif = document.getElementById('popup-gif');
   gif.style.display = 'none';
-  gif.src = '';
 }
 
 // ===============================
