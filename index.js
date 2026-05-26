@@ -285,7 +285,7 @@ function triggerPopup(type) {
 
 
   if (type === 'danger') {
-    gif.src = '/public/scuba-cat-scuba.gif';
+    // gif.src = '/public/scuba-cat-scuba.gif';
     gif.style.display = 'block';
     audio.src = '/public/kicau-mania.mp3';
     audio.play().catch(() => {}); // catch jika browser blokir autoplay
@@ -293,7 +293,6 @@ function triggerPopup(type) {
     audioOpen.src = '/public/anime-wow.mp3';
     audioOpen.play().catch(() => {}); // catch jika browser blokir autoplay
     gif.style.display = 'none';
-    gif.src = '';
     audio.pause();
     audio.src = '';
   }
