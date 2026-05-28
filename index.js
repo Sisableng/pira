@@ -231,7 +231,7 @@ const QUOTES = {
     { e: '🫂', t: 'hey. kamu boleh sedih. tapi inget ya, kamu udah sejauh ini... ceritamu bakal lebih hebat dari sebelumnya. jangan lupa minum air.' },
     { e: '💌', t: 'kalau lagi down, inget: ada orang yang genuinely happy kamu exists di dunia ini. suirr ✌️' },
     { e: '🌸', t: 'sedih itu valid. tapi kamu juga valid. dan kamu worth it untuk bahagia. even kalau sekarang belum kerasa.' },
-    { e: '☁️', t: 'hey... kamu ga harus baik baik aja terus. kamu ngga sendirian juga kok:)' },
+    { e: '☁️', t: 'hey... kamu ga harus baik baik aja. kamu ngga sendirian juga kok:)' },
   ],
   danger: [
     { e: '🚨', t: 'UDAH W BILANG JANGAN DI PENCET!! AKOWAKOWKOAWK.' },
