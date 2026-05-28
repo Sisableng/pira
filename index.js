@@ -1,95 +1,125 @@
 // ===============================
+// LENIS SMOOTH SCROLL
+// ===============================
+// Load Lenis from CDN via a dynamic script tag
+// (function () {
+//   const script = document.createElement('script');
+//   script.src = 'https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js';
+//   script.onload = function () {
+//     const lenis = new Lenis({
+//       duration: 1.2,
+//       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+//       smoothWheel: true,
+//       touchMultiplier: 1.5,
+//     });
+//     function raf(time) {
+//       lenis.raf(time);
+//       requestAnimationFrame(raf);
+//     }
+//     requestAnimationFrame(raf);
+//     window.__lenis = lenis;
+//   };
+//   document.head.appendChild(script);
+// })();
+
+// ===============================
 // CURRENT YEAR
 // ===============================
-
-const year = new Date().getFullYear();
 const elYear = document.getElementById("cpr-year");
-
-elYear.textContent = year;
-
+elYear.textContent = new Date().getFullYear();
 
 // ===============================
-// CURSOR
+// CURSOR (desktop only)
 // ===============================
 const cursor = document.getElementById('cursor');
 const cursorTrail = document.getElementById('cursor-trail');
 let mx = 0, my = 0, tx = 0, ty = 0;
+const isTouchDevice = window.matchMedia('(hover: none)').matches;
 
-document.addEventListener('mousemove', e => {
-  mx = e.clientX; my = e.clientY;
-  cursor.style.left = mx + 'px';
-  cursor.style.top = my + 'px';
-});
-
-function animTrail() {
-  tx += (mx - tx) * 0.15;
-  ty += (my - ty) * 0.15;
-  cursorTrail.style.left = tx + 'px';
-  cursorTrail.style.top = ty + 'px';
-  requestAnimationFrame(animTrail);
-}
-animTrail();
-
-document.addEventListener('mousedown', () => {
-  cursor.style.width = '14px';
-  cursor.style.height = '14px';
-});
-document.addEventListener('mouseup', () => {
-  cursor.style.width = '20px';
-  cursor.style.height = '20px';
-});
-
-// ===============================
-// FLOATING PARTICLES
-// ===============================
-const canvas = document.getElementById('particles-canvas');
-const ctx = canvas.getContext('2d');
-let particles = [];
-
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
-
-const EMOJIS = ['💕','✨','⭐','🌸','💫','🎀','🌟','🦋','🫧','💖'];
-
-function createParticle() {
-  return {
-    x: Math.random() * canvas.width,
-    y: canvas.height + 20,
-    size: 10 + Math.random() * 18,
-    speed: 0.4 + Math.random() * 0.8,
-    emoji: EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
-    opacity: 0.4 + Math.random() * 0.5,
-    wobble: Math.random() * Math.PI * 2,
-    wobbleSpeed: 0.02 + Math.random() * 0.03,
-    drift: (Math.random() - 0.5) * 0.5
-  };
-}
-
-for (let i = 0; i < 18; i++) {
-  let p = createParticle();
-  p.y = Math.random() * canvas.height;
-  particles.push(p);
-}
-
-function animParticles() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  particles.forEach((p, i) => {
-    p.y -= p.speed;
-    p.wobble += p.wobbleSpeed;
-    p.x += Math.sin(p.wobble) * 0.6 + p.drift;
-    ctx.globalAlpha = p.opacity;
-    ctx.font = p.size + 'px serif';
-    ctx.fillText(p.emoji, p.x, p.y);
-    if (p.y < -30) particles[i] = createParticle();
+if (!isTouchDevice) {
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
   });
-  ctx.globalAlpha = 1;
-  requestAnimationFrame(animParticles);
+  (function animTrail() {
+    tx += (mx - tx) * 0.15;
+    ty += (my - ty) * 0.15;
+    cursorTrail.style.left = tx + 'px';
+    cursorTrail.style.top = ty + 'px';
+    requestAnimationFrame(animTrail);
+  })();
+  document.addEventListener('mousedown', () => {
+    cursor.style.width = '14px'; cursor.style.height = '14px';
+  });
+  document.addEventListener('mouseup', () => {
+    cursor.style.width = '20px'; cursor.style.height = '20px';
+  });
+} else {
+  cursor.style.display = 'none';
+  cursorTrail.style.display = 'none';
 }
-animParticles();
+
+// ===============================
+// FLOATING PARTICLES — CSS-only, GPU composited
+// No canvas, no per-frame JS loop, mobile friendly
+// ===============================
+const PARTICLE_EMOJIS = ['💕','✨','⭐','🌸','💫','🎀','🌟','🦋','🫧','💖'];
+const PARTICLE_COUNT = isTouchDevice ? 10 : 18;
+const particleContainer = document.getElementById('particles-canvas');
+
+// Replace canvas with a plain div overlay
+const pDiv = document.createElement('div');
+pDiv.style.cssText = `
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:0;overflow:hidden;
+`;
+particleContainer.replaceWith(pDiv);
+
+// Inject keyframes once
+const styleSheet = document.createElement('style');
+styleSheet.textContent = `
+  @keyframes floatUp {
+    0%   { transform: translateY(0)   translateX(0)  rotate(0deg);   opacity: 0; }
+    5%   { opacity: 1; }
+    90%  { opacity: 0.7; }
+    100% { transform: translateY(-105vh) translateX(var(--drift)) rotate(var(--spin)); opacity: 0; }
+  }
+  .p-particle {
+    position: absolute;
+    bottom: -2rem;
+    will-change: transform, opacity;
+    animation: floatUp var(--dur) var(--delay) ease-in infinite;
+    font-size: var(--size);
+    line-height: 1;
+    user-select: none;
+  }
+`;
+document.head.appendChild(styleSheet);
+
+function makeParticle() {
+  const el = document.createElement('span');
+  el.className = 'p-particle';
+  el.textContent = PARTICLE_EMOJIS[Math.floor(Math.random() * PARTICLE_EMOJIS.length)];
+  const size = (10 + Math.random() * 18).toFixed(1);
+  const dur  = (12 + Math.random() * 14).toFixed(1);       // slower = fewer repaints
+  const delay = -(Math.random() * parseFloat(dur)).toFixed(1); // stagger across the cycle
+  const left = (Math.random() * 100).toFixed(1);
+  const drift = ((Math.random() - 0.5) * 80).toFixed(1);
+  const spin  = ((Math.random() - 0.5) * 120).toFixed(0);
+  el.style.cssText = `
+    --dur: ${dur}s;
+    --delay: ${delay}s;
+    --drift: ${drift}px;
+    --spin: ${spin}deg;
+    --size: ${size}px;
+    left: ${left}%;
+    opacity: 0;
+  `;
+  return el;
+}
+
+for (let i = 0; i < PARTICLE_COUNT; i++) pDiv.appendChild(makeParticle());
 
 // ===============================
 // ONBOARDING & TRANSITION
@@ -110,11 +140,9 @@ function enterPortal() {
   const ob = document.getElementById('onboarding');
   const fl = document.getElementById('fake-loading');
   const audio = document.getElementById('onboarding-audio');
-
   ob.classList.add('fade-out');
   audio.src = '/public/faaah.mp3';
-  audio.play().catch(() => {}); // catch jika browser blokir autoplay
-
+  audio.play().catch(() => {});
   setTimeout(() => {
     ob.style.display = 'none';
     fl.classList.add('active');
@@ -128,9 +156,7 @@ function animateLoading() {
   let i = 0;
   const interval = setInterval(() => {
     if (i < loadingTexts.length) {
-      textEl.textContent = loadingTexts[i];
-      bar.style.animationDuration = '0.05s';
-      i++;
+      textEl.textContent = loadingTexts[i++];
     } else {
       clearInterval(interval);
       finishLoading();
@@ -142,10 +168,8 @@ function finishLoading() {
   const fl = document.getElementById('fake-loading');
   const ov = document.getElementById('transition-overlay');
   const mc = document.getElementById('main-content');
-
   fl.style.opacity = '0';
   setTimeout(() => fl.style.display = 'none', 500);
-
   ov.classList.add('active');
   setTimeout(() => {
     ov.classList.remove('active');
@@ -160,29 +184,32 @@ function finishLoading() {
 const CONFETTI_COLORS = ['#ff69b4','#c8a0ff','#ffd700','#ff9ec8','#b0f5e8','#ffa0d0','#ffe4b5','#e0b0ff'];
 
 function spawnConfetti(x, y, count = 40) {
+  const frag = document.createDocumentFragment();
   for (let i = 0; i < count; i++) {
     const el = document.createElement('div');
     el.className = 'confetti-piece';
     el.style.cssText = `
-      left: ${x + (Math.random()-0.5)*100}px;
-      top: ${y}px;
-      background: ${CONFETTI_COLORS[Math.floor(Math.random()*CONFETTI_COLORS.length)]};
-      width: ${6+Math.random()*10}px;
-      height: ${6+Math.random()*10}px;
-      border-radius: ${Math.random()>0.5?'50%':'2px'};
-      animation-duration: ${1.5+Math.random()*2}s;
-      animation-delay: ${Math.random()*0.4}s;
+      left:${x + (Math.random() - 0.5) * 100}px;
+      top:${y}px;
+      background:${CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)]};
+      width:${6 + Math.random() * 10}px;
+      height:${6 + Math.random() * 10}px;
+      border-radius:${Math.random() > 0.5 ? '50%' : '2px'};
+      animation-duration:${1.5 + Math.random() * 2}s;
+      animation-delay:${Math.random() * 0.4}s;
     `;
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 4000);
+    frag.appendChild(el);
   }
+  document.body.appendChild(frag);
+  setTimeout(() => {
+    document.querySelectorAll('.confetti-piece').forEach(el => el.remove());
+  }, 4000);
 }
 
 function launchWelcomeConfetti() {
   for (let i = 0; i < 5; i++) {
     setTimeout(() => spawnConfetti(
-      window.innerWidth * 0.1 + Math.random() * window.innerWidth * 0.8,
-      -10, 25
+      window.innerWidth * 0.1 + Math.random() * window.innerWidth * 0.8, -10, 25
     ), i * 200);
   }
 }
@@ -192,31 +219,33 @@ function launchWelcomeConfetti() {
 // ===============================
 function spawnHearts(x, y) {
   const hearts = ['❤️','💕','💖','🩷','💗','💓'];
+  const frag = document.createDocumentFragment();
   for (let i = 0; i < 8; i++) {
     const el = document.createElement('div');
     el.className = 'heart-burst';
     const angle = (i / 8) * Math.PI * 2;
     const dist = 60 + Math.random() * 60;
     el.style.cssText = `
-      left: ${x}px; top: ${y}px;
-      --tx: ${Math.cos(angle)*dist}px;
-      --ty: ${Math.sin(angle)*dist - 40}px;
-      animation-duration: ${0.8+Math.random()*0.4}s;
+      left:${x}px;top:${y}px;
+      --tx:${Math.cos(angle) * dist}px;
+      --ty:${Math.sin(angle) * dist - 40}px;
+      animation-duration:${0.8 + Math.random() * 0.4}s;
     `;
-    el.textContent = hearts[Math.floor(Math.random()*hearts.length)];
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 2000);
+    el.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+    frag.appendChild(el);
   }
+  document.body.appendChild(frag);
+  setTimeout(() => document.querySelectorAll('.heart-burst').forEach(el => el.remove()), 2000);
 }
 
 function spawnFloatText(x, y, text) {
   const el = document.createElement('div');
   el.className = 'float-text';
-  const rot = (Math.random()-0.5)*20;
+  const rot = (Math.random() - 0.5) * 20;
   el.style.cssText = `
-    left: ${x - 60}px; top: ${y}px;
-    --rot: ${rot}deg;
-    --rot2: ${rot + (Math.random()-0.5)*15}deg;
+    left:${x - 60}px;top:${y}px;
+    --rot:${rot}deg;
+    --rot2:${rot + (Math.random() - 0.5) * 15}deg;
   `;
   el.textContent = text;
   document.body.appendChild(el);
@@ -228,7 +257,7 @@ function spawnFloatText(x, y, text) {
 // ===============================
 const QUOTES = {
   sad: [
-    { e: '🫂', t: 'hey. kamu boleh sedih. tapi inget ya, kamu udah sejauh ini... ceritamu bakal lebih hebat dari sebelumnya. jangan lupa minum air.' },
+    { e: '🫂', t: 'hey... kamu boleh sedih. tapi inget ya, kamu udah sejauh ini... ceritamu bakal lebih hebat dari sebelumnya. jangan lupa minum air.' },
     { e: '💌', t: 'kalau lagi down, inget: ada orang yang genuinely happy kamu exists di dunia ini. suirr ✌️' },
     { e: '🌸', t: 'sedih itu valid. tapi kamu juga valid. dan kamu worth it untuk bahagia. even kalau sekarang belum kerasa.' },
     { e: '☁️', t: 'hey... kamu ga harus baik baik aja. kamu ngga sendirian juga kok:)' },
@@ -256,62 +285,41 @@ const QUOTES = {
   ]
 };
 
-// patch event passing
-document.querySelectorAll('.fun-btn').forEach(btn => {
-  btn.addEventListener('click', function(e) {
-    // already handled by onclick attr with type param
-    // but pass event for position
-    currentEvent = e;
-  });
-});
-
-// Override onclick to also get event
 let currentEvent = null;
 document.addEventListener('click', e => { currentEvent = e; });
 
 let sadInterval = null;
-let sadProgressInterval = null;
 let sadIndex = 0;
-const SAD_DURATION = 5000; // ms, ganti sesuai selera
+const SAD_DURATION = 5000;
 
 function startSadRotate(pool) {
-  // Reset index ke posisi awal (quote pertama sudah ditampilkan di triggerPopup)
   sadIndex = 0;
-
   const wrap = document.getElementById('sad-progress-wrap');
-  const bar = document.getElementById('sad-progress-bar');
+  const bar  = document.getElementById('sad-progress-bar');
   wrap.style.display = 'block';
 
   function runCycle() {
-    // Reset & animasi progress bar
     bar.style.transition = 'none';
     bar.style.width = '0%';
-
-    // Paksa reflow supaya transition reset benar-benar terjadi
-    bar.offsetWidth;
-
+    bar.offsetWidth; // force reflow
     bar.style.transition = `width ${SAD_DURATION}ms linear`;
     bar.style.width = '100%';
-
-    // Ganti konten setelah durasi habis
     sadInterval = setTimeout(() => {
-      sadIndex = (sadIndex + 1) % pool.length; // looping balik ke 0
+      sadIndex = (sadIndex + 1) % pool.length;
       const next = pool[sadIndex];
       document.getElementById('popup-emoji').textContent = next.e;
-      document.getElementById('popup-text').textContent = next.t;
-      runCycle(); // rekursif → looping
+      document.getElementById('popup-text').textContent  = next.t;
+      runCycle();
     }, SAD_DURATION);
   }
-
   runCycle();
 }
 
 function stopSadRotate() {
   clearTimeout(sadInterval);
   sadInterval = null;
-
   const wrap = document.getElementById('sad-progress-wrap');
-  const bar = document.getElementById('sad-progress-bar');
+  const bar  = document.getElementById('sad-progress-bar');
   wrap.style.display = 'none';
   bar.style.width = '0%';
 }
@@ -322,14 +330,14 @@ function triggerPopup(type) {
   const q = pool[Math.floor(Math.random() * pool.length)];
 
   document.getElementById('popup-emoji').textContent = q.e;
-  document.getElementById('popup-text').textContent = q.t;
+  document.getElementById('popup-text').textContent  = q.t;
 
-  const gif = document.getElementById('popup-gif');
-  const audio = document.getElementById('popup-audio');
+  const gif        = document.getElementById('popup-gif');
+  const audio      = document.getElementById('popup-audio');
   const audioKicau = document.getElementById('popup-audio-kicau');
-  const audioOpen = document.getElementById('popup-audio-open');
+  const audioOpen  = document.getElementById('popup-audio-open');
 
-  stopSadRotate(); // selalu clear dulu
+  stopSadRotate();
 
   if (type === 'danger') {
     gif.style.display = 'block';
@@ -340,7 +348,7 @@ function triggerPopup(type) {
     audio.play().catch(() => {});
     gif.style.display = 'none';
     audioKicau.pause();
-    startSadRotate(pool); // mulai rotate + progress bar
+    startSadRotate(pool);
   } else {
     audioOpen.src = '/public/anime-wow.mp3';
     audioOpen.play().catch(() => {});
@@ -361,32 +369,20 @@ function triggerPopup(type) {
 
 function closePopup() {
   document.getElementById('popup-overlay').classList.remove('active');
-
   stopSadRotate();
-
-  const audio = document.getElementById('popup-audio');
-  audio.pause();
-  audio.currentTime = 0;
-
-  const audioKicau = document.getElementById('popup-audio-kicau');
-  audioKicau.pause();
-  audioKicau.currentTime = 0;
-
-  const gif = document.getElementById('popup-gif');
-  gif.style.display = 'none';
+  ['popup-audio','popup-audio-kicau'].forEach(id => {
+    const a = document.getElementById(id);
+    a.pause(); a.currentTime = 0;
+  });
+  document.getElementById('popup-gif').style.display = 'none';
 }
 
 // ===============================
 // EASTER EGG
 // ===============================
-function showEasterEgg() {
-  document.getElementById('easter-egg-popup').classList.add('active');
-}
-function closeEasterEgg() {
-  document.getElementById('easter-egg-popup').classList.remove('active');
-}
+function showEasterEgg()  { document.getElementById('easter-egg-popup').classList.add('active'); }
+function closeEasterEgg() { document.getElementById('easter-egg-popup').classList.remove('active'); }
 
-// konami-like: click bottom-right 5 times fast
 let easterClicks = 0, easterTimer;
 document.getElementById('easter-egg-trigger').addEventListener('click', () => {
   easterClicks++;
@@ -397,18 +393,13 @@ document.getElementById('easter-egg-trigger').addEventListener('click', () => {
 // ===============================
 // SCROLL REVEAL
 // ===============================
-const reveals = document.querySelectorAll('.scroll-reveal');
 const revealObserver = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.classList.add('revealed');
-    }
-  });
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('revealed'); });
 }, { threshold: 0.15 });
-reveals.forEach(r => revealObserver.observe(r));
+document.querySelectorAll('.scroll-reveal').forEach(r => revealObserver.observe(r));
 
 // ===============================
-// RANDOM HEART on double-click
+// DOUBLE-CLICK HEARTS
 // ===============================
 document.addEventListener('dblclick', e => {
   spawnHearts(e.clientX, e.clientY);
@@ -416,7 +407,7 @@ document.addEventListener('dblclick', e => {
 });
 
 // ===============================
-// SUBTLE TITLE EASTER EGG
+// TITLE CYCLE
 // ===============================
 let titleIndex = 0;
 const titles = [
@@ -433,19 +424,22 @@ setInterval(() => {
 }, 4000);
 
 // ===============================
-// TOUCH SUPPORT for mobile hearts
+// TOUCH HEARTS (mobile)
 // ===============================
 document.addEventListener('touchstart', e => {
-  const t = e.touches[0];
   if (Math.random() > 0.7) {
+    const t = e.touches[0];
     spawnHearts(t.clientX, t.clientY);
   }
 }, { passive: true });
 
+// ===============================
+// SCROLL TO TOP
+// ===============================
 function scrollToTop() {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    })
-
+  if (window.__lenis) {
+    window.__lenis.scrollTo(0, { duration: 1.5 });
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 }
